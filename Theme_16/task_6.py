@@ -3,21 +3,23 @@ import time
 from typing import Callable
 
 
-def LoggerDecorator(func: Callable) -> Callable:
-    @functools.wraps(func)
-    def wrapped_func(*args, **kwargs):
-        print("Вызов функции", func.__name__)
+class ClassDecorator:
+    def __init__(self, func: Callable) -> None:
+        functools.update_wrapper(self, func)
+        self.func = func
+
+    def __call__(self, *args, **kwargs) -> Callable:
+        print("Вызов функции", self.func.__name__)
         print("Аргументы:", str(args) + ",", kwargs)
         start_time = time.time()
-        result = func(*args, **kwargs)
+        result = self.func(*args, **kwargs)
         run_time = time.time() - start_time
         print("Результат:", result)
         print("Время выполнения:", run_time)
         return result
-    return wrapped_func
 
 
-@LoggerDecorator
+@ClassDecorator
 def complex_algorithm(arg1, arg2):
     # Здесь выполняется “сложный” алгоритм
     result = 0
@@ -28,6 +30,7 @@ def complex_algorithm(arg1, arg2):
                 result += i + j
     # Можете попробовать вынести создание файла из циклов и проверить, сколько времени алгоритм будет работать в этом случае
     return result
+
 
 # Пример вызова функции с применением декоратора
 result = complex_algorithm(10, 50)
